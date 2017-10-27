@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 
+
 namespace HomeExercises
 {
 	public class ObjectComparison
@@ -16,15 +17,19 @@ namespace HomeExercises
 				new Person("Vasili III of Russia", 28, 170, 60, null));
 
 			// Перепишите код на использование Fluent Assertions.
-			Assert.AreEqual(actualTsar.Name, expectedTsar.Name);
-			Assert.AreEqual(actualTsar.Age, expectedTsar.Age);
-			Assert.AreEqual(actualTsar.Height, expectedTsar.Height);
-			Assert.AreEqual(actualTsar.Weight, expectedTsar.Weight);
+			actualTsar.Name.Should().BeEquivalentTo(expectedTsar.Name);
+            actualTsar.Age.Should().Be(expectedTsar.Age);
+            actualTsar.Height.Should().Be(expectedTsar.Height);
+            actualTsar.Weight.Should().Be(expectedTsar.Weight);
 
-			Assert.AreEqual(expectedTsar.Parent.Name, actualTsar.Parent.Name);
-			Assert.AreEqual(expectedTsar.Parent.Age, actualTsar.Parent.Age);
-			Assert.AreEqual(expectedTsar.Parent.Height, actualTsar.Parent.Height);
-			Assert.AreEqual(expectedTsar.Parent.Parent, actualTsar.Parent.Parent);
+            actualTsar.Parent.Name.Should().BeEquivalentTo(expectedTsar.Parent.Name);
+            actualTsar.Parent.Age.Should().Be(expectedTsar.Parent.Age);
+            actualTsar.Parent.Height.Should().Be(expectedTsar.Parent.Height);
+            actualTsar.Parent.Weight.Should().Be(expectedTsar.Parent.Weight);
+   //         Assert.AreEqual(expectedTsar.Parent.Name, actualTsar.Parent.Name);
+			//Assert.AreEqual(expectedTsar.Parent.Age, actualTsar.Parent.Age);
+			//Assert.AreEqual(expectedTsar.Parent.Height, actualTsar.Parent.Height);
+			//Assert.AreEqual(expectedTsar.Parent.Parent, actualTsar.Parent.Parent);
 		}
 
 		[Test]
@@ -35,7 +40,13 @@ namespace HomeExercises
 			var expectedTsar = new Person("Ivan IV The Terrible", 54, 170, 70,
 			new Person("Vasili III of Russia", 28, 170, 60, null));
 
-			// Какие недостатки у такого подхода? 
+			// Какие недостатки у такого подхода?
+            /*От Антона:
+             * Если расширять класс, то при сравнени ссылочных типов
+             * можно допустить ошибку и сравнить через == (сравнение ссылок(кроме строк)).
+             * Будет лучше, если реализовать функционал AreEqual в методе
+             * Equals внутри класса Person.
+             */ 
 			Assert.True(AreEqual(actualTsar, expectedTsar));
 
 		}

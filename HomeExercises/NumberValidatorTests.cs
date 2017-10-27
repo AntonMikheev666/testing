@@ -7,28 +7,73 @@ namespace HomeExercises
 {
 	public class NumberValidatorTests
 	{
-		[Test]
-		public void Test()
-		{
-			Assert.Throws<ArgumentException>(() => new NumberValidator(-1, 2, true));
-			Assert.DoesNotThrow(() => new NumberValidator(1, 0, true));
-			Assert.Throws<ArgumentException>(() => new NumberValidator(-1, 2, false));
-			Assert.DoesNotThrow(() => new NumberValidator(1, 0, true));
+	    public NumberValidator Validator;
 
-			Assert.IsTrue(new NumberValidator(17, 2, true).IsValidNumber("0.0"));
-			Assert.IsTrue(new NumberValidator(17, 2, true).IsValidNumber("0"));
-			Assert.IsTrue(new NumberValidator(17, 2, true).IsValidNumber("0.0"));
-			Assert.IsFalse(new NumberValidator(3, 2, true).IsValidNumber("00.00"));
-			Assert.IsFalse(new NumberValidator(3, 2, true).IsValidNumber("-0.00"));
-			Assert.IsTrue(new NumberValidator(17, 2, true).IsValidNumber("0.0"));
-			Assert.IsFalse(new NumberValidator(3, 2, true).IsValidNumber("+0.00"));
-			Assert.IsTrue(new NumberValidator(4, 2, true).IsValidNumber("+1.23"));
-			Assert.IsFalse(new NumberValidator(3, 2, true).IsValidNumber("+1.23"));
-			Assert.IsFalse(new NumberValidator(17, 2, true).IsValidNumber("0.000"));
-			Assert.IsFalse(new NumberValidator(3, 2, true).IsValidNumber("-1.23"));
-			Assert.IsFalse(new NumberValidator(3, 2, true).IsValidNumber("a.sd"));
+	    [SetUp]
+	    public void Setup()
+	    {
+	        Validator = new NumberValidator(3, 1);
+	    }
+
+        [TestCase(-1, 2, TestName = "OnNegativePrecision")]
+        [TestCase(2, -1, TestName = "OnNegativeScale")]
+        [TestCase(1, 2, TestName = "OnPrecisionLessThenScale")]
+        public void NumberValidator_Shold_ThrowException(int precision, int scale)
+        {
+            Assert.Throws<ArgumentException>(() => new NumberValidator(precision, scale));
+        }
+
+
+        [TestCase("", TestName = "EmptyString")]
+        [TestCase("sdfhs", TestName = "NaN1")]
+        [TestCase("a.bc", TestName = "NaN2")]
+        public void NumberValidator_TestIncorrectInput(string input)
+        {
+            Validator.IsValidNumber(input).Should().BeFalse();
+        }
+
+        [TestCase("100.0", ExpectedResult = false, TestName = "TooBigNumberSize")]
+        [TestCase("10.0", ExpectedResult = true, TestName = "CorrectNumberSize")]
+        [TestCase("+10.0", ExpectedResult = false, TestName = "TooBigNumberSizeWithSign")]
+        [TestCase("+0.0", ExpectedResult = true, TestName = "CorrectNumberSizeWithSign")]
+        public bool NumberValidator_TestPrecision(string input)
+		{
+		    return Validator.IsValidNumber(input);
 		}
-	}
+
+
+        [TestCase("1.00", ExpectedResult = false, TestName = "TooBigFracionPart")]
+        [TestCase("1.0", ExpectedResult = true, TestName = "CorrectFracionPart1")]
+        [TestCase("+1.0", ExpectedResult = true, TestName = "CorrectFracionPart2")]
+        [TestCase("1", ExpectedResult = true, TestName = "CorrectFracionPart3")]
+        public bool NumberValidator_TestScale(string input)
+        {
+            return Validator.IsValidNumber(input);
+        }
+
+        [TestCase("1", ExpectedResult = true, TestName = "PositiveNumberWithoutSign")]
+        [TestCase("+1.0", ExpectedResult = true, TestName = "PositiveNumberWithSign")]
+        [TestCase("-1.0", ExpectedResult = false, TestName = "NegativeNumber")]
+        [TestCase("0", ExpectedResult = true, TestName = "Zero")]
+        [TestCase("+0", ExpectedResult = true, TestName = "PositiveZero")]
+        [TestCase("-0", ExpectedResult = false, TestName = "NegativeZero")]
+        public bool NumberValidator_TestOnlyPositiveNumberValidator(string input)
+        {
+            Validator = new NumberValidator(3, 2, true);
+            return Validator.IsValidNumber(input);
+        }
+
+        [TestCase("1", ExpectedResult = true, TestName = "PositiveNumberWithoutSign")]
+        [TestCase("+1.0", ExpectedResult = true, TestName = "PositiveNumberWithSign")]
+        [TestCase("-1.0", ExpectedResult = true, TestName = "NegativeNumber")]
+        [TestCase("0", ExpectedResult = true, TestName = "Zero")]
+        [TestCase("+0", ExpectedResult = true, TestName = "PositiveZero")]
+        [TestCase("-0", ExpectedResult = true, TestName = "NegativeZero")]
+        public bool NumberValidator_TestAnyNumberValidator(string input)
+        {
+            return Validator.IsValidNumber(input);
+        }
+    }
 
 	public class NumberValidator
 	{
@@ -45,7 +90,7 @@ namespace HomeExercises
 			if (precision <= 0)
 				throw new ArgumentException("precision must be a positive number");
 			if (scale < 0 || scale >= precision)
-				throw new ArgumentException("precision must be a non-negative number less or equal than precision");
+				throw new ArgumentException("scale must be a non-negative number less or equal than precision");
 			numberRegex = new Regex(@"^([+-]?)(\d+)([.,](\d+))?$", RegexOptions.IgnoreCase);
 		}
 
