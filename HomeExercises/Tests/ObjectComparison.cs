@@ -19,8 +19,9 @@ namespace HomeExercises.Tests
 
 			// Перепишите код на использование Fluent Assertions.
 		    actualTsar.ShouldBeEquivalentTo(expectedTsar, 
-                opt => opt.Excluding(person => person.Id)
-                          .Excluding(person => person.Parent));
+                opt => opt.Excluding(p => (p.SelectedMemberInfo.DeclaringType == typeof(Person))
+                                          && (p.SelectedMemberInfo.Name.EndsWith("Id")))
+                          .ComparingEnumsByValue());
 		}
 
 		[Test]
