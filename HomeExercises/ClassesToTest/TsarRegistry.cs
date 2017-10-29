@@ -1,4 +1,4 @@
-﻿namespace HomeExercises
+﻿namespace HomeExercises.ClassesToTest
 {
 	public class TsarRegistry
 	{

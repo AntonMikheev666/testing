@@ -1,77 +1,80 @@
 ﻿using System;
-using System.Text.RegularExpressions;
+using HomeExercises.ClassesToTest;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace HomeExercises
+namespace HomeExercises.Tests
 {
 	public class NumberValidatorTests
 	{
-	    public NumberValidator Validator;
-
-	    [SetUp]
-	    public void Setup()
-	    {
-	        Validator = new NumberValidator(3, 1);
-	    }
 
         [TestCase(-1, 2, TestName = "OnNegativePrecision")]
         [TestCase(2, -1, TestName = "OnNegativeScale")]
         [TestCase(1, 2, TestName = "OnPrecisionLessThenScale")]
+        [TestCase(0, 1, TestName = "OnZeroPrecision")]
         public void NumberValidator_Shold_ThrowException(int precision, int scale)
         {
             Assert.Throws<ArgumentException>(() => new NumberValidator(precision, scale));
         }
 
 
-        [TestCase("", TestName = "EmptyString")]
-        [TestCase("sdfhs", TestName = "NaN1")]
-        [TestCase("a.bc", TestName = "NaN2")]
-        public void NumberValidator_TestIncorrectInput(string input)
+        [TestCase(3, 1, "", TestName = "EmptyString")]
+        [TestCase(3, 1, null, TestName = "Null")]
+        [TestCase(3, 1, "sdf", TestName = "Word")]
+        [TestCase(3, 1, "a.bc", TestName = "NumberLikeWord")]
+        public void NumberValidator_TestIncorrectInput(int precision, int scale, string input)
         {
-            Validator.IsValidNumber(input).Should().BeFalse();
+            new NumberValidator(precision, scale).IsValidNumber(input).Should().BeFalse();
         }
 
-        [TestCase("100.0", ExpectedResult = false, TestName = "TooBigNumberSize")]
-        [TestCase("10.0", ExpectedResult = true, TestName = "CorrectNumberSize")]
-        [TestCase("+10.0", ExpectedResult = false, TestName = "TooBigNumberSizeWithSign")]
-        [TestCase("+0.0", ExpectedResult = true, TestName = "CorrectNumberSizeWithSign")]
-        public bool NumberValidator_TestPrecision(string input)
+        [TestCase(3, 1, "100.0", ExpectedResult = false, TestName = "TooBigNumberSize")]
+        [TestCase(3, 1, "10.0", ExpectedResult = true, TestName = "CorrectNumberSize")]
+        [TestCase(3, 1, "+10.0", ExpectedResult = false, TestName = "TooBigNumberSizeWithPlus")]
+        [TestCase(3, 1, "+1.0", ExpectedResult = true, TestName = "CorrectNumberSizeWithPlus")]
+        [TestCase(3, 1, "-10.0", ExpectedResult = false, TestName = "TooBigNumberSizeWithMinus")]
+        [TestCase(3, 1, "-1.0", ExpectedResult = true, TestName = "CorrectNumberSizeWithMinus")]
+        public bool NumberValidator_TestPrecision(int precision, int scale, string input)
 		{
-		    return Validator.IsValidNumber(input);
+		    return new NumberValidator(precision, scale).IsValidNumber(input);
 		}
 
 
-        [TestCase("1.00", ExpectedResult = false, TestName = "TooBigFracionPart")]
-        [TestCase("1.0", ExpectedResult = true, TestName = "CorrectFracionPart1")]
-        [TestCase("+1.0", ExpectedResult = true, TestName = "CorrectFracionPart2")]
-        [TestCase("1", ExpectedResult = true, TestName = "CorrectFracionPart3")]
-        public bool NumberValidator_TestScale(string input)
+        [TestCase(3, 1, "1.00", ExpectedResult = false, TestName = "TooBigFracionPart")]
+        [TestCase(3, 1, "1.0", ExpectedResult = true, TestName = "CorrectFracionPart")]
+        [TestCase(3, 1, "+1.00", ExpectedResult = false, TestName = "TooBigFracionPartWithPlus")]
+        [TestCase(3, 1, "-1.00", ExpectedResult = false, TestName = "TooBigFracionPartWithMinus")]
+        [TestCase(3, 1, "+1.0", ExpectedResult = true, TestName = "CorrectFracionPartWithPlus")]
+        [TestCase(3, 1, "-1.0", ExpectedResult = true, TestName = "CorrectFracionPartWithMinus")]
+        [TestCase(3, 1, "1", ExpectedResult = true, TestName = "NumberWithoutFracionPart")]
+        public bool NumberValidator_TestScale(int precision, int scale, string input)
         {
-            return Validator.IsValidNumber(input);
+            return new NumberValidator(precision, scale).IsValidNumber(input);
         }
 
-        [TestCase("1", ExpectedResult = true, TestName = "PositiveNumberWithoutSign")]
-        [TestCase("+1.0", ExpectedResult = true, TestName = "PositiveNumberWithSign")]
-        [TestCase("-1.0", ExpectedResult = false, TestName = "NegativeNumber")]
-        [TestCase("0", ExpectedResult = true, TestName = "Zero")]
-        [TestCase("+0", ExpectedResult = true, TestName = "PositiveZero")]
-        [TestCase("-0", ExpectedResult = false, TestName = "NegativeZero")]
-        public bool NumberValidator_TestOnlyPositiveNumberValidator(string input)
+        [TestCase(3, 1, "1.0", ExpectedResult = true, TestName = "PositiveNumberWithoutSign")]
+        [TestCase(3, 1, "+1.0", ExpectedResult = true, TestName = "PositiveNumberWithSign")]
+        [TestCase(3, 1, "-1.0", ExpectedResult = false, TestName = "NegativeNumber")]
+        [TestCase(3, 1, "0.0", ExpectedResult = true, TestName = "Zero")]
+        [TestCase(3, 1, "+0.0", ExpectedResult = true, TestName = "PositiveZero")]
+        [TestCase(3, 1, "-0.0", ExpectedResult = false, TestName = "NegativeZero")]
+        public bool NumberValidator_TestOnlyPositiveNumberValidator(int precision, int scale, string input)
         {
-            Validator = new NumberValidator(3, 2, true);
-            return Validator.IsValidNumber(input);
+            return new NumberValidator(precision, scale, true).IsValidNumber(input);
         }
 
-        [TestCase("1", ExpectedResult = true, TestName = "PositiveNumberWithoutSign")]
-        [TestCase("+1.0", ExpectedResult = true, TestName = "PositiveNumberWithSign")]
-        [TestCase("-1.0", ExpectedResult = true, TestName = "NegativeNumber")]
-        [TestCase("0", ExpectedResult = true, TestName = "Zero")]
-        [TestCase("+0", ExpectedResult = true, TestName = "PositiveZero")]
-        [TestCase("-0", ExpectedResult = true, TestName = "NegativeZero")]
-        public bool NumberValidator_TestAnyNumberValidator(string input)
+        [TestCase(3, 1, "1", ExpectedResult = true, TestName = "PositiveNumberWithoutSignAndFractPart")]
+        [TestCase(3, 1, "-1", ExpectedResult = true, TestName = "NumberWithoutFractPart")]
+        [TestCase(3, 1, "+1.0", ExpectedResult = true, TestName = "PositiveNumberWithSign")]
+        [TestCase(3, 1, "-1.0", ExpectedResult = true, TestName = "NegativeNumber")]
+        [TestCase(3, 1, "0.0", ExpectedResult = true, TestName = "ZeroWithFractionPart")]
+        [TestCase(3, 1, "+0.0", ExpectedResult = true, TestName = "PositiveZeroWithFractionPart")]
+        [TestCase(3, 1, "-0.0", ExpectedResult = true, TestName = "NegativeZeroWithFractionPart")]
+        [TestCase(3, 1, "0", ExpectedResult = true, TestName = "Zero")]
+        [TestCase(3, 1, "+0", ExpectedResult = true, TestName = "PositiveZero")]
+        [TestCase(3, 1, "-0", ExpectedResult = true, TestName = "NegativeZero")]
+        public bool NumberValidator_PositiveAndNegativeNumberValidatorTest(int precision, int scale, string input)
         {
-            return Validator.IsValidNumber(input);
+            return new NumberValidator(precision, scale).IsValidNumber(input);
         }
     }
 }
