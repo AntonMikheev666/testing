@@ -46,6 +46,8 @@ namespace HomeExercises.Tests
         [TestCase(3, 1, "+1.0", ExpectedResult = true, TestName = "CorrectFracionPartWithPlus")]
         [TestCase(3, 1, "-1.0", ExpectedResult = true, TestName = "CorrectFracionPartWithMinus")]
         [TestCase(3, 1, "1", ExpectedResult = true, TestName = "NumberWithoutFracionPart")]
+        [TestCase(3, 0, "1.0", ExpectedResult = false, TestName = "NumberWithFractPartOnZeroScale")]
+        [TestCase(3, 0, "1", ExpectedResult = true, TestName = "NumberWithoutFractPartOnZeroScale")]
         public bool NumberValidator_TestScale(int precision, int scale, string input)
         {
             return new NumberValidator(precision, scale).IsValidNumber(input);
