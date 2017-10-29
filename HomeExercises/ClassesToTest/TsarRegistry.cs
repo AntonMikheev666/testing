@@ -1,8 +1,4 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
-
-
-namespace HomeExercises
+﻿namespace HomeExercises
 {
 	public class TsarRegistry
 	{

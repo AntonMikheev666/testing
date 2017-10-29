@@ -7,7 +7,7 @@
     <ProjectGuid>{4F9FBCCA-43E0-431B-944D-834D16AD18F9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MakeItFluent</RootNamespace>
+    <RootNamespace>HomeExercises</RootNamespace>
     <AssemblyName>ObjectComparison</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -55,12 +55,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NumberValidator.cs" />
-    <Compile Include="Person.cs" />
-    <Compile Include="TsarRegistry.cs" />
-    <Compile Include="ObjectComparison.cs" />
+    <Compile Include="ClassesToTest\NumberValidator.cs" />
+    <Compile Include="ClassesToTest\Person.cs" />
+    <Compile Include="ClassesToTest\TsarRegistry.cs" />
+    <Compile Include="Tests\ObjectComparison.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="NumberValidatorTests.cs" />
+    <Compile Include="Tests\NumberValidatorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

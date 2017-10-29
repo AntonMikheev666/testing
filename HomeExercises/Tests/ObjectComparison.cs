@@ -17,19 +17,9 @@ namespace HomeExercises
 				new Person("Vasili III of Russia", 28, 170, 60, null));
 
 			// Перепишите код на использование Fluent Assertions.
-			actualTsar.Name.Should().BeEquivalentTo(expectedTsar.Name);
-            actualTsar.Age.Should().Be(expectedTsar.Age);
-            actualTsar.Height.Should().Be(expectedTsar.Height);
-            actualTsar.Weight.Should().Be(expectedTsar.Weight);
-
-            actualTsar.Parent.Name.Should().BeEquivalentTo(expectedTsar.Parent.Name);
-            actualTsar.Parent.Age.Should().Be(expectedTsar.Parent.Age);
-            actualTsar.Parent.Height.Should().Be(expectedTsar.Parent.Height);
-            actualTsar.Parent.Weight.Should().Be(expectedTsar.Parent.Weight);
-   //         Assert.AreEqual(expectedTsar.Parent.Name, actualTsar.Parent.Name);
-			//Assert.AreEqual(expectedTsar.Parent.Age, actualTsar.Parent.Age);
-			//Assert.AreEqual(expectedTsar.Parent.Height, actualTsar.Parent.Height);
-			//Assert.AreEqual(expectedTsar.Parent.Parent, actualTsar.Parent.Parent);
+		    actualTsar.ShouldBeEquivalentTo(expectedTsar, 
+                opt => opt.Excluding(person => person.Id)
+                          .Excluding(person => person.Parent));
 		}
 
 		[Test]
@@ -42,8 +32,7 @@ namespace HomeExercises
 
 			// Какие недостатки у такого подхода?
             /*От Антона:
-             * Если расширять класс, то при сравнени ссылочных типов
-             * можно допустить ошибку и сравнить через == (сравнение ссылок(кроме строк)).
+             * Прописывать сравнение каждого поля ручками.
              * Будет лучше, если реализовать функционал AreEqual в методе
              * Equals внутри класса Person.
              */ 
